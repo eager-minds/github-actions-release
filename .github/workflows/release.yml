@@ -20,7 +20,7 @@ jobs:
           git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
           git config --global user.email "${{ env.CI_COMMIT_EMAIL }}"
       - id: release
-        uses: eager-minds/github-actions-release@main
+        uses: eager-minds/github-actions-release@v0.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
