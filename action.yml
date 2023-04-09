@@ -1,0 +1,27 @@
+name: "Github Release"
+author: "Eager Minds"
+branding:
+  icon: "package"
+  color: "green"
+description: "Generate GitHub release for a tag"
+
+inputs:
+  tag_name:
+    description: "The tag name"
+    required: true
+  release_name:
+    description: "The name of the release to publish"
+    required: true
+  changelog_path:
+    description: "Changelog file path to get release description"
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - run: $GITHUB_ACTION_PATH/generate-changelog.sh
+      shell: bash
+      env:
+        TAG_NAME: ${{ inputs.tag_name }}
+        RELEASE_NAME: ${{ inputs.release_name }}
+        CHANGELOG_PATH: ${{ inputs.changelog_path }}
