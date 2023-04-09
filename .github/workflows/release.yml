@@ -47,7 +47,7 @@ jobs:
         with:
           tag_name: ${{ env.TAG_NAME }}
           release_name: ${{ env.RELEASE_NAME }}
-          changelog_path: ${{ env.CHANGELOG_PATH } }
+          changelog_path: ${{ env.CHANGELOG_PATH }}
 
       - id: control_release_failure
         name: Control release failure
