@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo "env.TAG_NAME: $TAG_NAME"
-echo "env.CHANGELOG_PATH: $CHANGELOG_PATH"
+echo "env.TAG_NAME: $tag_name"
+echo "env.CHANGELOG_PATH: $changelog_path"
 
 if [ -z "$TAG_NAME" ]; then
 echo "Please provide the version number as an argument."
