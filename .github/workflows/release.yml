@@ -28,7 +28,17 @@ jobs:
           git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
           git config --global user.email "${{ env.CI_COMMIT_EMAIL }}"
 
+      - id: set_changelog
+        name: set changelog
+        if: ${{ CHANGELOG_TAG_FORMAT }}
+        run: echo "^## \\[$TAG_FORMAT\\]"
+      - id: set_changelog2
+        name: set changelog2
+        if: ${{ CHANGELOG_TAG_FORMAT2 }}
+        run: echo "CHANGELOG_TAG_FORMAT2=^## \\[$TAG_FORMAT\\]" >> $GITHUB_ENV
+
       - run: echo $CHANGELOG_TAG_FORMAT
+      - run: echo $CHANGELOG_TAG_FORMAT2
 
       - id: retrieve_tag
         name: Get tag from CHANGELOG
