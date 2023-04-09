@@ -12,7 +12,6 @@ env:
   CI_COMMIT_AUTHOR: Continuous Integration
   CI_COMMIT_EMAIL: continuous_integration@noreply.eagerminds.tech
   TAG_FORMAT: "[0-9]+\\.[0-9]+\\.[0-9]+"
-  RELEASE_NAME: Release v$TAG_NAME
   CHANGELOG_PATH: CHANGELOG
 
 jobs:
@@ -30,6 +29,11 @@ jobs:
         name: set changelog
         if: env.CHANGELOG_TAG_FORMAT == ''
         run: echo "CHANGELOG_TAG_FORMAT=^## \\[$TAG_FORMAT\\]" >> $GITHUB_ENV
+
+      - id: set_release_name
+        name: set release name
+        if: env.RELEASE_NAME == ''
+        run: echo "RELEASE_NAME=Release v$TAG_NAME" >> $GITHUB_ENV
 
       - id: set_tag_name_from_changelog
         name: Get tag from CHANGELOG
