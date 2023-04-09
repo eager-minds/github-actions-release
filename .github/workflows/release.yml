@@ -8,22 +8,46 @@ on:
 
   workflow_dispatch:
 
+env:
+  CI_COMMIT_AUTHOR: Continuous Integration
+  CI_COMMIT_EMAIL: continuous_integration@noreply.eagerminds.tech
+  TAG_NAME: 0.0.1
+  RELEASE_NAME: Release v$TAG_NAME
+  CHANGELOG_PATH: CHANGELOG
+
 jobs:
   build:
     permissions: write-all
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - name: Git config
         run: |
           git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
           git config --global user.email "${{ env.CI_COMMIT_EMAIL }}"
+
+      - id: tag
+        name: Tag $TAG_NAME
+        run: git tag -a $TAG_NAME
+
       - id: release
-        uses: eager-minds/github-actions-release@v0.0.1
+        uses: eager-minds/github-actions-release@main
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
-          tag_name: 0.0.1
-          release_name: Release v0.0.1
-          changelog_path: CHANGELOG
+          tag_name: $TAG_NAME
+          release_name: $RELEASE_NAME
+          changelog_path: $CHANGELOG_PATH
+
+      - id: control_release_failure
+        name: Control release failure
+        if: ${{ failure() }}
+        run: echo "Previous step failed
+
+      - id: push_tag
+        name: Push tag $TAG_NAME
+        run: git push origin $TAG_NAME
+
+      - id: echo_release_output
+        name: Echo Release Output
+        run: echo ${{ steps.release.outputs }}
