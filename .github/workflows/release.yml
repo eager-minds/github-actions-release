@@ -28,6 +28,8 @@ jobs:
           git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
           git config --global user.email "${{ env.CI_COMMIT_EMAIL }}"
 
+      - run: echo $CHANGELOG_TAG_FORMAT
+
       - id: retrieve_tag
         name: Get tag from CHANGELOG
         run: grep -Eo "$CHANGELOG_TAG_FORMAT" $CHANGELOG_PATH | head -1 | grep -Eo "$TAG_FORMAT"
