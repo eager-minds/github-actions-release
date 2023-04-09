@@ -45,9 +45,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
-          tag_name: $TAG_NAME
-          release_name: $RELEASE_NAME
-          changelog_path: $CHANGELOG_PATH
+          tag_name: ${{ TAG_NAME }}
+          release_name: ${{ RELEASE_NAME }}
+          changelog_path: ${{ env.CHANGELOG_PATH } }
 
       - id: control_release_failure
         name: Control release failure
