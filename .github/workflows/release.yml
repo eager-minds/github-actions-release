@@ -28,7 +28,7 @@ jobs:
 
       - id: tag
         name: Tag $TAG_NAME
-        run: git tag -a $TAG_NAME
+        run: git tag -a -m $TAG_NAME $TAG_NAME
 
       - id: release
         uses: eager-minds/github-actions-release@main
@@ -42,7 +42,7 @@ jobs:
       - id: control_release_failure
         name: Control release failure
         if: ${{ failure() }}
-        run: echo "Previous step failed
+        run: echo "Previous step failed"
 
       - id: push_tag
         name: Push tag $TAG_NAME
