@@ -30,7 +30,7 @@ jobs:
 
       - id: set_changelog
         name: set changelog
-        if: env.CHANGELOG_TAG_FORMAT == ''
+        if: env.CHANGELOG_TAG_FORMAT != ''
         run: echo "^## \\[$TAG_FORMAT\\]"
       - id: set_changelog2
         name: set changelog2
