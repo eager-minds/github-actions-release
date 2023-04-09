@@ -34,7 +34,7 @@ jobs:
         run: echo "^## \\[$TAG_FORMAT\\]"
       - id: set_changelog2
         name: set changelog2
-        if: ${{ CHANGELOG_TAG_FORMAT2 }}
+        if: ${{ env(CHANGELOG_TAG_FORMAT2) }}
         run: echo "CHANGELOG_TAG_FORMAT2=^## \\[$TAG_FORMAT\\]" >> $GITHUB_ENV
 
       - run: echo $CHANGELOG_TAG_FORMAT
