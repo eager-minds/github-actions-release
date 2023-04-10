@@ -25,7 +25,7 @@ NEXT_VERSION_LINE=$(tail -n +$((START_LINE + 1)) "$CHANGELOG_PATH" | grep -n -m 
 if [ -z "$NEXT_VERSION_LINE" ]; then
 TAG_MESSAGE=$(tail -n +"$START_LINE" "$CHANGELOG_PATH")
 else
-TAG_MESSAGE=$(tail -n "$START_LINE" "$CHANGELOG_PATH" | head -n "$((NEXT_VERSION_LINE))")
+TAG_MESSAGE=$(tail -n +"$START_LINE" "$CHANGELOG_PATH" | head -n "$((NEXT_VERSION_LINE))")
 fi
 
 echo "env.TAG_NAME: $TAG_NAME"
