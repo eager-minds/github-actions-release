@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo "env.TAG_NAME: $TAG_NAME"
 echo "env.CHANGELOG_PATH: $CHANGELOG_PATH"
