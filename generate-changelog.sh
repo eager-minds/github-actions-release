@@ -28,4 +28,4 @@ else
 TAG_MESSAGE=$(tail -n "$START_LINE" "$CHANGELOG_PATH" | head -n "$((NEXT_VERSION_LINE))")
 fi
 
-hub release create -m "${TAG_MESSAGE}" "$TAG_NAME"
+gh release create "$TAG_NAME" -t "$RELEASE_NAME" --notes "${TAG_MESSAGE}"
