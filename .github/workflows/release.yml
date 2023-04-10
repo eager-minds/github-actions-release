@@ -48,9 +48,8 @@ jobs:
 
       - id: release
         uses: eager-minds/github-actions-release@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           tag_name: ${{ env.TAG_NAME }}
           release_name: ${{ env.RELEASE_NAME }}
           changelog_path: ${{ env.CHANGELOG_PATH }}
