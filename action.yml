@@ -9,6 +9,9 @@ inputs:
   tag_name:
     description: "The tag name"
     required: true
+  GITHUB_TOKEN:
+    description: "Github token"
+    required: true
   release_name:
     description: "The name of the release to publish"
     required: true
@@ -22,6 +25,7 @@ runs:
     - run: $GITHUB_ACTION_PATH/generate-changelog.sh
       shell: bash
       env:
+        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
         TAG_NAME: ${{ inputs.tag_name }}
         RELEASE_NAME: ${{ inputs.release_name }}
         CHANGELOG_PATH: ${{ inputs.changelog_path }}
