@@ -30,17 +30,17 @@ jobs:
         if: env.CHANGELOG_TAG_FORMAT == ''
         run: echo "CHANGELOG_TAG_FORMAT=^## \\[$TAG_FORMAT\\]" >> $GITHUB_ENV
 
-      - id: set_release_name
-        name: Set RELEASE_NAME using TAG_NAME
-        if: env.RELEASE_NAME == ''
-        run: echo "RELEASE_NAME=Release v$TAG_NAME" >> $GITHUB_ENV
-
       - id: set_tag_name_from_changelog
         name: Set TAG_NAME from CHANGELOG
         if: env.TAG_NAME == ''
         run: |
           TAG_NAME=$(grep -Eo "$CHANGELOG_TAG_FORMAT" $CHANGELOG_PATH | head -1 | grep -Eo "$TAG_FORMAT")
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+
+      - id: set_release_name
+        name: Set RELEASE_NAME using TAG_NAME
+        if: env.RELEASE_NAME == ''
+        run: echo "RELEASE_NAME=Release v$TAG_NAME" >> $GITHUB_ENV
 
       - id: tag
         name: Tag $TAG_NAME
@@ -66,4 +66,4 @@ jobs:
 
       - id: echo_release_output
         name: Echo Release Output
-        run: echo ${{ steps.release.outputs }}
+        run: echo ${{ steps.release.outputs.stdout }}

@@ -28,4 +28,10 @@ else
 TAG_MESSAGE=$(tail -n "$START_LINE" "$CHANGELOG_PATH" | head -n "$((NEXT_VERSION_LINE))")
 fi
 
+echo "env.TAG_NAME: $TAG_NAME"
+echo "env.CHANGELOG_PATH: $CHANGELOG_PATH"
+echo "env.START_LINE: $START_LINE"
+echo "env.NEXT_VERSION_LINE: $NEXT_VERSION_LINE"
+echo "env.TAG_MESSAGE: $TAG_MESSAGE"
+
 gh release create "$TAG_NAME" -t "$RELEASE_NAME" --notes "${TAG_MESSAGE}"
