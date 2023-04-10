@@ -26,17 +26,17 @@ jobs:
           git config --global user.email "${{ env.CI_COMMIT_EMAIL }}"
 
       - id: set_changelog
-        name: set changelog
+        name: Set CHANGELOG_TAG_FORMAT using TAG_FORMAT
         if: env.CHANGELOG_TAG_FORMAT == ''
         run: echo "CHANGELOG_TAG_FORMAT=^## \\[$TAG_FORMAT\\]" >> $GITHUB_ENV
 
       - id: set_release_name
-        name: set release name
+        name: Set RELEASE_NAME using TAG_NAME
         if: env.RELEASE_NAME == ''
         run: echo "RELEASE_NAME=Release v$TAG_NAME" >> $GITHUB_ENV
 
       - id: set_tag_name_from_changelog
-        name: Get tag from CHANGELOG
+        name: Set TAG_NAME from CHANGELOG
         if: env.TAG_NAME == ''
         run: |
           TAG_NAME=$(grep -Eo "$CHANGELOG_TAG_FORMAT" $CHANGELOG_PATH | head -1 | grep -Eo "$TAG_FORMAT")
@@ -61,7 +61,7 @@ jobs:
         run: echo "Previous step failed"
 
       - id: push_tag
-        name: Push tag $TAG_NAME
+        name: Push tag
         run: git push origin $TAG_NAME
 
       - id: echo_release_output

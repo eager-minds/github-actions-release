@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo "env.TAG_NAME: $tag_name"
-echo "env.CHANGELOG_PATH: $changelog_path"
+echo "env.TAG_NAME: $TAG_NAME"
+echo "env.CHANGELOG_PATH: $CHANGELOG_PATH"
 
 if [ -z "$TAG_NAME" ]; then
 echo "Please provide the version number as an argument."
@@ -23,7 +23,9 @@ fi
 NEXT_VERSION_LINE=$(tail -n +$((START_LINE + 1)) "$CHANGELOG_PATH" | grep -n -m 1 "^## \[" | cut -d : -f 1)
 
 if [ -z "$NEXT_VERSION_LINE" ]; then
-tail -n +"$START_LINE" "$CHANGELOG_PATH"
+TAG_MESSAGE=$(tail -n +"$START_LINE" "$CHANGELOG_PATH")
 else
-tail -n "$START_LINE" "$CHANGELOG_PATH" | head -n "$((NEXT_VERSION_LINE))"
+TAG_MESSAGE=$(tail -n "$START_LINE" "$CHANGELOG_PATH" | head -n "$((NEXT_VERSION_LINE))")
 fi
+
+hub release create -m "${TAG_MESSAGE}" $TAG_NAME
