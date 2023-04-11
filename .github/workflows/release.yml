@@ -39,6 +39,18 @@ jobs:
         if: env.RELEASE_NAME == ''
         run: echo "RELEASE_NAME=Release v$TAG_NAME" >> $GITHUB_ENV
 
+#      - id: tag
+#        name: Tag $TAG_NAME
+#        run: |
+#          git tag -a -m $TAG_NAME $TAG_NAME
+#          echo "tagged=true" >> $GITHUB_OUTPUT
+#
+#      - id: push_tag
+#        name: Push tag
+#        run: |
+#          git push origin $TAG_NAME
+#          echo "tag_pushed=true" >> $GITHUB_OUTPUT
+
       - id: release
         uses: eager-minds/github-actions-release@main
         env:
@@ -55,3 +67,7 @@ jobs:
       - name: Control release failure
         if: ${{ failure() }}
         run: echo "Previous step failed"
+
+#      - name: Control release failure
+#        if: ${{ failure() && steps.push_tag.outputs.tag_pushed }}
+#        run: git push --delete origin $TAG_NAME
