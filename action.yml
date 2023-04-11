@@ -28,7 +28,7 @@ runs:
       run: |
         changelog_message="$($GITHUB_ACTION_PATH/generate-changelog.sh)"
         EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-        echo "tag_message<<$EOF" >> $GITHUB_OUTPUT
+        echo "changelog_message<<$EOF" >> $GITHUB_OUTPUT
         echo "$changelog_message" >> $GITHUB_OUTPUT
         echo "$EOF" >> $GITHUB_OUTPUT
       shell: bash
@@ -42,4 +42,4 @@ runs:
       env:
         TAG_NAME: "${{ inputs.tag_name }}"
         RELEASE_NAME: "${{ inputs.release_name }}"
-        TAG_MESSAGE: "${{ steps.get_changelog_message.outputs.tag_message }}"
+        TAG_MESSAGE: "${{ steps.get_changelog_message.outputs.changelog_message }}"
