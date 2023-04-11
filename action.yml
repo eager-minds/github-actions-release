@@ -37,7 +37,9 @@ runs:
         CHANGELOG_PATH: ${{ inputs.changelog_path }}
     - id: release
       name: Release
-      run: echo "release_url="$(gh release create "$TAG_NAME" -t "$RELEASE_NAME" --notes "${TAG_MESSAGE}" --notes-start-tag "Test") >> $GITHUB_OUTPUT
+      run: |
+        release_url=$(gh release create "$TAG_NAME" -t "$RELEASE_NAME" --notes "${TAG_MESSAGE}")
+        echo "release_url=$release_url" >> $GITHUB_OUTPUT
       shell: bash
       env:
         TAG_NAME: "${{ inputs.tag_name }}"
