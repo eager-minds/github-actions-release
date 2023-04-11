@@ -25,7 +25,9 @@ runs:
   using: 'composite'
   steps:
     - id: get_changelog_message
-      run: echo "changelog_message=$($GITHUB_ACTION_PATH/generate-changelog.sh)" >> $GITHUB_OUTPUT
+      run: |
+        changelog_message=$($GITHUB_ACTION_PATH/generate-changelog.sh)
+        echo "changelog_message=$changelog_message" >> $GITHUB_OUTPUT
       shell: bash
       env:
         TAG_NAME: ${{ inputs.tag_name }}
