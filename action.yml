@@ -38,10 +38,11 @@ runs:
     - id: release
       name: Release
       run: |
-        release_url=$(gh release create "$TAG_NAME" -t "$RELEASE_NAME" --notes "${TAG_MESSAGE}" --verify-tag)
+        release_url=$(gh release create "$TAG_NAME" -t "$RELEASE_NAME" -F "${CHANGELOG_PATH}" --verify-tag)
         echo "release_url=$release_url" >> $GITHUB_OUTPUT
       shell: bash
       env:
         TAG_NAME: "${{ inputs.tag_name }}"
         RELEASE_NAME: "${{ inputs.release_name }}"
         TAG_MESSAGE: "${{ steps.get_changelog_message.outputs.changelog_message }}"
+        CHANGELOG_PATH: ${{ inputs.changelog_path }}
