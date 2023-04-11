@@ -27,9 +27,6 @@ runs:
     - id: get_changelog_message
       run: |
         changelog_message=$($GITHUB_ACTION_PATH/generate-changelog.sh)
-        changelog_message="${changelog_message//'%'/'%25'}"
-        changelog_message="${changelog_message//$'\n'/'%0A'}"
-        changelog_message="${changelog_message//$'\r'/'%0D'}"
         echo "changelog_message=$changelog_message" >> $GITHUB_OUTPUT
       shell: bash
       env:
@@ -42,4 +39,4 @@ runs:
       env:
         TAG_NAME: ${{ inputs.tag_name }}
         RELEASE_NAME: ${{ inputs.release_name }}
-        TAG_MESSAGE: ${{ steps.get_changelog_message.outputs.changelog_message }}
+        TAG_MESSAGE: "${{ steps.get_changelog_message.outputs.changelog_message }}"
