@@ -38,7 +38,7 @@ runs:
     - id: release
       name: Release
       run: |
-        release_url=$(gh release create "$TAG_NAME" -t "$RELEASE_NAME" --notes "${TAG_MESSAGE}")
+        release_url=$(gh release create "$TAG_NAME" -t "$RELEASE_NAME" --notes "${TAG_MESSAGE}" --notes-start-tag "Test")
         echo "release_url=$release_url" >> $GITHUB_OUTPUT
       shell: bash
       env:
