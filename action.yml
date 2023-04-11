@@ -27,7 +27,11 @@ runs:
     - id: get_changelog_message
       run: |
         changelog_message=$($GITHUB_ACTION_PATH/generate-changelog.sh)
-        echo "changelog_message=$changelog_message" >> $GITHUB_OUTPUT
+        eof_changelog_message=$(cat << EOF
+        $changelog_message
+        EOF
+        )
+        echo "changelog_message=$eof_changelog_message" >> $GITHUB_OUTPUT
       shell: bash
       env:
         TAG_NAME: ${{ inputs.tag_name }}
