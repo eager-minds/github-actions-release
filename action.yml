@@ -15,13 +15,26 @@ inputs:
   changelog_path:
     description: "Changelog file path to get release description"
     required: false
+outputs:
+  release_url:
+    description: "Created release URL"
+    value: ${{ steps.release.outputs.release_url }}
+
 
 runs:
   using: 'composite'
   steps:
-    - run: $GITHUB_ACTION_PATH/generate-changelog.sh
+    - id: get_changelog_message
+      run: echo "changelog_message="$($GITHUB_ACTION_PATH/generate-changelog.sh) >> $GITHUB_OUTPUT
+      shell: bash
+      env:
+        TAG_NAME: ${{ inputs.tag_name }}
+        CHANGELOG_PATH: ${{ inputs.changelog_path }}
+    - id: release
+      name: Release
+      run: echo "release_url="$(gh release create "$TAG_NAME" -t "$RELEASE_NAME" --notes "${TAG_MESSAGE}") >> $GITHUB_OUTPUT
       shell: bash
       env:
         TAG_NAME: ${{ inputs.tag_name }}
         RELEASE_NAME: ${{ inputs.release_name }}
-        CHANGELOG_PATH: ${{ inputs.changelog_path }}
+        TAG_MESSAGE: ${{ steps.get_changelog_path.outputs.changelog_message }}

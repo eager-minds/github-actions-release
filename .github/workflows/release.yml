@@ -25,20 +25,17 @@ jobs:
           git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
           git config --global user.email "${{ env.CI_COMMIT_EMAIL }}"
 
-      - id: set_changelog
-        name: Set CHANGELOG_TAG_FORMAT using TAG_FORMAT
+      - name: Set CHANGELOG_TAG_FORMAT using TAG_FORMAT
         if: env.CHANGELOG_TAG_FORMAT == ''
         run: echo "CHANGELOG_TAG_FORMAT=^## \\[$TAG_FORMAT\\]" >> $GITHUB_ENV
 
-      - id: set_tag_name_from_changelog
-        name: Set TAG_NAME from CHANGELOG
+      - name: Set TAG_NAME from CHANGELOG
         if: env.TAG_NAME == ''
         run: |
           TAG_NAME=$(grep -Eo "$CHANGELOG_TAG_FORMAT" $CHANGELOG_PATH | head -1 | grep -Eo "$TAG_FORMAT")
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
 
-      - id: set_release_name
-        name: Set RELEASE_NAME using TAG_NAME
+      - name: Set RELEASE_NAME using TAG_NAME
         if: env.RELEASE_NAME == ''
         run: echo "RELEASE_NAME=Release v$TAG_NAME" >> $GITHUB_ENV
 
@@ -59,11 +56,10 @@ jobs:
           release_name: ${{ env.RELEASE_NAME }}
           changelog_path: ${{ env.CHANGELOG_PATH }}
 
-      - id: control_release_failure
-        name: Control release failure
-        if: ${{ failure() }}
-        run: echo "Previous step failed"
-
       - id: echo_release_output
         name: Echo Release Output
-        run: echo ${{ steps.release.outputs.stdout }}
+        run: echo ${{ steps.release.outputs.release_url }}
+
+      - name: Control release failure
+        if: ${{ failure() }}
+        run: echo "Previous step failed"
