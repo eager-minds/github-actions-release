@@ -26,10 +26,11 @@ runs:
   steps:
     - id: get_changelog_message
       run: |
-        changelog_message=$($GITHUB_ACTION_PATH/generate-changelog.sh)
-        echo "changelog_message<<$EOF" >> $GITHUB_OUTPUT
-        echo "$changelog_message" >> $GITHUB_OUTPUT
-        echo "$EOF" >> $GITHUB_OUTPUT
+        changelog_message="$($GITHUB_ACTION_PATH/generate-changelog.sh)"
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+        echo "CHANGELOG_MESSAGE<<$EOF" >> $GITHUB_ENV
+        echo "$changelog_message" >> $GITHUB_ENV
+        echo "$EOF" >> $GITHUB_ENV
       shell: bash
       env:
         TAG_NAME: ${{ inputs.tag_name }}
