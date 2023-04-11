@@ -67,7 +67,3 @@ jobs:
       - name: Control release failure
         if: ${{ failure() }}
         run: echo "Previous step failed"
-
-#      - name: Control release failure
-#        if: ${{ failure() && steps.push_tag.outputs.tag_pushed }}
-#        run: git push --delete origin $TAG_NAME
