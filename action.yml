@@ -37,4 +37,4 @@ runs:
       env:
         TAG_NAME: ${{ inputs.tag_name }}
         RELEASE_NAME: ${{ inputs.release_name }}
-        TAG_MESSAGE: ${{ steps.get_changelog_path.outputs.changelog_message }}
+        TAG_MESSAGE: ${{ steps.get_changelog_message.outputs.changelog_message }}
