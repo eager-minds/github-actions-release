@@ -34,4 +34,6 @@ echo "env.START_LINE: $START_LINE"
 echo "env.NEXT_VERSION_LINE: $NEXT_VERSION_LINE"
 echo "env.TAG_MESSAGE: $TAG_MESSAGE"
 
-gh release create "$TAG_NAME" -t "$RELEASE_NAME" --notes "${TAG_MESSAGE}"
+rel=$(gh release create "$TAG_NAME" -t "$RELEASE_NAME" --notes "${TAG_MESSAGE}")
+
+echo "Rel: $rel"
