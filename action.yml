@@ -41,6 +41,7 @@ runs:
         echo "release_url=$release_url" >> $GITHUB_OUTPUT
       shell: bash
       env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         TAG_NAME: "${{ inputs.tag_name }}"
         RELEASE_NAME: "${{ inputs.release_name }}"
         TAG_MESSAGE: "${{ steps.get_changelog_message.outputs.changelog_message }}"
