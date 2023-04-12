@@ -16,7 +16,7 @@ inputs:
     description: "Release version format"
     required: false
     default: "[0-9]+\\.[0-9]+\\.[0-9]+"
-  tag_name_format:
+  tag_name:
     description: "Tag name format"
     required: false
     default: "v\\$\\{\\{ env.RELEASE_VERSION \\}\\}"
@@ -67,7 +67,7 @@ runs:
         echo "RELEASE_VERSION=$release_version" >> $GITHUB_ENV
 
     - name: Set TAG_NAME using inputs.tag_name_format
-      if: env.RELEASE_VERSION == '' && !inputs.disable_changelog
+      if: env.TAG_NAME == ''
       shell: bash
       run: echo "TAG_NAME=${{ inputs.tag_name_format }}" >> $GITHUB_ENV
 
