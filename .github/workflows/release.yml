@@ -25,32 +25,6 @@ jobs:
           git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
           git config --global user.email "${{ env.CI_COMMIT_EMAIL }}"
 
-      - name: Set CHANGELOG_TAG_FORMAT using TAG_FORMAT
-        if: env.CHANGELOG_TAG_FORMAT == ''
-        run: echo "CHANGELOG_TAG_FORMAT=^## \\[$TAG_FORMAT\\]" >> $GITHUB_ENV
-
-      - name: Set TAG_NAME from CHANGELOG
-        if: env.TAG_NAME == ''
-        run: |
-          TAG_NAME=$(grep -Eo "$CHANGELOG_TAG_FORMAT" $CHANGELOG_PATH | head -1 | grep -Eo "$TAG_FORMAT")
-          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
-
-      - name: Set RELEASE_NAME using TAG_NAME
-        if: env.RELEASE_NAME == ''
-        run: echo "RELEASE_NAME=Release v$TAG_NAME" >> $GITHUB_ENV
-
-      - id: tag
-        name: Tag $TAG_NAME
-        run: |
-          git tag -a -m $TAG_NAME $TAG_NAME
-          echo "tagged=true" >> $GITHUB_OUTPUT
-
-      - id: push_tag
-        name: Push tag
-        run: |
-          git push origin $TAG_NAME
-          echo "tag_pushed=true" >> $GITHUB_OUTPUT
-
       - id: release
         uses: eager-minds/github-actions-release@main
         env:
@@ -58,6 +32,7 @@ jobs:
         with:
           tag_name: ${{ env.TAG_NAME }}
           release_name: ${{ env.RELEASE_NAME }}
+          changelog_path: ${{ env.CHANGELOG_PATH }}
 
       - id: echo_release_output
         name: Echo Release Output
@@ -66,7 +41,3 @@ jobs:
       - name: Control release failure
         if: ${{ failure() }}
         run: echo "Previous step failed"
-
-      - name: Control release failure
-        if: ${{ failure() && steps.push_tag.outputs.tag_pushed }}
-        run: git push --delete origin $TAG_NAME
