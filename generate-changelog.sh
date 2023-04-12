@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if [ -z "$TAG_NAME" ]; then
   echo "Please provide the version number as an argument."
