@@ -42,7 +42,7 @@ runs:
         CHANGELOG_PATH: "${{ inputs.changelog_path }}"
         CHANGELOG_TAG_FORMAT: "${{ inputs.changelog_tag_format }}"
         RELEASE_DESCRIPTION: "${{ inputs.release_description }}"
-      run: "setting up environment variables from inputs"
+      run: echo "Setting up environment variables from inputs"
 
     - name: Set CHANGELOG_TAG_FORMAT using TAG_FORMAT
       if: env.CHANGELOG_TAG_FORMAT == ''
