@@ -29,7 +29,7 @@ runs:
     - name: "Set Input Release Description"
       if: inputs.release_description != ''
       shell: bash
-      run: echo "RELEASE_DESCRIPTION=${{ inputs.release_description }} >> $GITHUB_ENV
+      run: echo "RELEASE_DESCRIPTION=${{ inputs.release_description }}" >> $GITHUB_ENV
     - name: "Get release description from changelog file"
       if: inputs.changelog_path != '' && env.RELEASE_DESCRIPTION == ''
       shell: bash
