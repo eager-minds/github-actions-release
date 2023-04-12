@@ -35,7 +35,7 @@ inputs:
   changelog_release_version_format:
     description: "Changelog tag format, defaults to \"^## \\[$release_version_format\\]\""
     required: false
-    default: "^## \\[${{ inputs.release_version_format }}\\]"
+    default: "^## \\[${{ github.event.inputs.release_version_format }}\\]"
 outputs:
   release_url:
     description: "Created release URL"
