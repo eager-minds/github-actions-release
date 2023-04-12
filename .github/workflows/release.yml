@@ -27,9 +27,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: "0.0.45"
-          release_name: Release v0.0.45
-          disable_changelog: true
+#          tag_name: "0.0.45"
+#          release_name: Release v0.0.45
+#          disable_changelog: true
 #          release_description: "Tag Version: v0.0.42"
 
       - id: echo_release_output

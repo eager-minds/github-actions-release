@@ -27,7 +27,7 @@ inputs:
     required: false
     default: "CHANGELOG.md"
   changelog_tag_format:
-    description: "Changelog tag format, defaults to \"## \\[$tag_format\\]\""
+    description: "Changelog tag format, defaults to \"^## \\[$tag_format\\]\""
     required: false
 outputs:
   release_url:
