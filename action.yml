@@ -22,7 +22,7 @@ inputs:
   tag_name_format:
     description: "Tag name format"
     required: false
-    default: "v\\$\\{\\{ env.RELEASE_VERSION \\}\\}"
+    default: "v\$\{\{ env.RELEASE_VERSION \}\}"
   release_name:
     description: "The name of the release to publish, defaults to \"Release v$RELEASE_VERSION\""
     required: false
