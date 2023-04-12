@@ -86,7 +86,7 @@ runs:
       shell: bash
       run: |
         release_description="$($GITHUB_ACTION_PATH/generate-changelog.sh)"
-        echo $release_description > ${{ env.TAG_NAME }}.changelog
+        echo $release_description > temp_changelog.md
 
     - id: release
       name: Release
