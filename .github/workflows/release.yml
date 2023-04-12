@@ -28,8 +28,6 @@ jobs:
         uses: eager-minds/github-actions-release@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          changelog_path: ${{ env.CHANGELOG_PATH }}
 
       - id: echo_release_output
         name: Echo Release Output
