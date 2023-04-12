@@ -10,7 +10,7 @@ inputs:
     description: "The tag name, required if missing changelog_path"
     required: false
   release_name:
-    description: "The name of the release to publish, defaults to \"Release v${{ env.TAG_NAME }}\""
+    description: "The name of the release to publish, defaults to \"Release v$TAG_NAME\""
     required: true
   release_description:
     description: "Release description"
