@@ -39,13 +39,12 @@ runs:
   steps:
     - name: "Set env variables from inputs"
       shell: bash
-      env:
-        TAG_NAME: "${{ inputs.tag_name }}"
-        RELEASE_NAME: "${{ inputs.release_name }}"
-        CHANGELOG_PATH: "${{ inputs.changelog_path }}"
-        CHANGELOG_TAG_FORMAT: "${{ inputs.changelog_tag_format }}"
-        RELEASE_DESCRIPTION: "${{ inputs.release_description }}"
-      run: echo "Setting up environment variables from inputs"
+      run: |
+        echo "TAG_NAME=${{ inputs.tag_name }}" >> $GITHUB_ENV
+        echo "RELEASE_NAME=${{ inputs.release_name }}" >> $GITHUB_ENV
+        echo "CHANGELOG_PATH=${{ inputs.changelog_path }}" >> $GITHUB_ENV
+        echo "CHANGELOG_TAG_FORMAT=${{ inputs.changelog_tag_format }}" >> $GITHUB_ENV
+        echo "RELEASE_DESCRIPTION=${{ inputs.release_description }}" >> $GITHUB_ENV
 
     - name: Set CHANGELOG_TAG_FORMAT using TAG_FORMAT
       if: env.CHANGELOG_TAG_FORMAT == ''
