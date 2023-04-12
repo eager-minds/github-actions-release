@@ -75,15 +75,18 @@ runs:
         git push origin ${{ env.TAG_NAME }}
         echo "tag_pushed=true" >> $GITHUB_OUTPUT
 
+    - name: "Get release description from changelog file"
+      if: env.RELEASE_DESCRIPTION == '' && !inputs.disable_changelog
+      shell: bash
+      run: echo "${{ env.RELEASE_DESCRIPTION }}" > "${{ env.TAG_NAME }}.changelog"
+
     - name: "Save release description to ${tag_name}_changelog file"
+#    - name: "Get release description from changelog file"
       if: env.RELEASE_DESCRIPTION == '' && !inputs.disable_changelog
       shell: bash
       run: |
         release_description="$($GITHUB_ACTION_PATH/generate-changelog.sh)"
-        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-        echo "RELEASE_DESCRIPTION<<$EOF" >> $GITHUB_ENV
-        echo "$release_description" >> $GITHUB_ENV
-        echo "$EOF" >> $GITHUB_ENV
+        echo "$release_description" > "${{ env.TAG_NAME }}.changelog"
 
     - id: release
       name: Release
