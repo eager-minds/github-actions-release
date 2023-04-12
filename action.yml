@@ -65,7 +65,7 @@ runs:
     - name: Set RELEASE_NAME using TAG_NAME
       if: env.RELEASE_NAME == ''
       shell: bash
-      run: echo "RELEASE_NAME=Release v${{ env.TAG_NAME }}" >> $GITHUB_ENV
+      run: echo "RELEASE_NAME=Release ${{ env.TAG_NAME }}" >> $GITHUB_ENV
 
     - id: tag
       name: Tag ${{ env.TAG_NAME }}
