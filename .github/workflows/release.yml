@@ -27,7 +27,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 #          changelog_path: ./CHANGELOG.md
-#          tag_name: "0.0.45"
+#          release_version: "0.0.45"
 #          release_name: Release v0.0.45
 #          disable_changelog: true
 #          release_description: "Tag Version: v0.0.42"

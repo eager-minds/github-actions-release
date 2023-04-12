@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -z "$TAG_NAME" ]; then
+if [ -z "$RELEASE_VERSION" ]; then
   echo "Please provide the version number as an argument."
   exit 1
 fi
@@ -10,10 +10,10 @@ if [ ! -f "$CHANGELOG_PATH" ]; then
   exit 1
 fi
 
-START_LINE=$(grep -n "^## \[$TAG_NAME\]" "$CHANGELOG_PATH" | cut -d : -f 1)
+START_LINE=$(grep -n "^## \[$RELEASE_VERSION\]" "$CHANGELOG_PATH" | cut -d : -f 1)
 
 if [ -z "$START_LINE" ]; then
-  echo "The provided version \"$TAG_NAME\" is not found in the CHANGELOG file: $CHANGELOG_PATH"
+  echo "The provided version \"$RELEASE_VERSION\" is not found in the CHANGELOG file: $CHANGELOG_PATH"
   exit 1
 fi
 

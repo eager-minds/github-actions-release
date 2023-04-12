@@ -9,15 +9,19 @@ inputs:
   token:
     description: "The Github access token"
     required: true
-  tag_name:
+  release_version:
     description: "The tag name, required if missing changelog file"
     required: false
-  tag_format:
-    description: "Tag format"
+  release_version_format:
+    description: "Release version format"
     required: false
     default: "[0-9]+\\.[0-9]+\\.[0-9]+"
+  tag_name_format:
+    description: "Tag name format"
+    required: false
+    default: "v${{ env.RELEASE_VERSION }}"
   release_name:
-    description: "The name of the release to publish, defaults to \"Release v$TAG_NAME\""
+    description: "The name of the release to publish, defaults to \"Release v$RELEASE_VERSION\""
     required: false
   release_description:
     description: "Release description. By default it is obtained from changelog file or blank"
@@ -29,8 +33,8 @@ inputs:
     description: "Changelog file path to get release description"
     required: false
     default: "CHANGELOG.md"
-  changelog_tag_format:
-    description: "Changelog tag format, defaults to \"^## \\[$tag_format\\]\""
+  changelog_release_version_format:
+    description: "Changelog tag format, defaults to \"^## \\[$release_version_format\\]\""
     required: false
 outputs:
   release_url:
@@ -44,57 +48,62 @@ runs:
       shell: bash
       run: |
         echo "GITHUB_TOKEN=${{ inputs.token }}" >> $GITHUB_ENV
-        echo "TAG_NAME=${{ inputs.tag_name }}" >> $GITHUB_ENV
+        echo "RELEASE_VERSION=${{ inputs.release_version }}" >> $GITHUB_ENV
         echo "RELEASE_NAME=${{ inputs.release_name }}" >> $GITHUB_ENV
         echo "CHANGELOG_PATH=${{ inputs.changelog_path }}" >> $GITHUB_ENV
-        echo "CHANGELOG_TAG_FORMAT=${{ inputs.changelog_tag_format }}" >> $GITHUB_ENV
+        echo "CHANGELOG_RELEASE_VERSION_FORMAT=${{ inputs.changelog_release_version_format }}" >> $GITHUB_ENV
         echo "RELEASE_DESCRIPTION=${{ inputs.release_description }}" >> $GITHUB_ENV
 
-    - name: Set CHANGELOG_TAG_FORMAT using TAG_FORMAT
-      if: env.CHANGELOG_TAG_FORMAT == ''
+    - name: Set CHANGELOG_RELEASE_VERSION_FORMAT using RELEASE_VERSION_FORMAT
+      if: env.CHANGELOG_RELEASE_VERSION_FORMAT == ''
       shell: bash
-      run: echo "CHANGELOG_TAG_FORMAT=^## \\[${{ inputs.tag_format }}\\]" >> $GITHUB_ENV
+      run: echo "CHANGELOG_RELEASE_VERSION_FORMAT=^## \\[${{ inputs.release_version_format }}\\]" >> $GITHUB_ENV
 
-    - name: Set TAG_NAME from CHANGELOG
-      if: env.TAG_NAME == '' && !inputs.disable_changelog
+    - name: Get latest release_version from CHANGELOG
+      if: env.RELEASE_VERSION == '' && !inputs.disable_changelog
       shell: bash
       run: |
-        tag_name=$(grep -Eo "${{ env.CHANGELOG_TAG_FORMAT }}" ${{ inputs.changelog_path }} | head -1 | grep -Eo "${{ inputs.tag_format }}")
-        echo "TAG_NAME=$tag_name" >> $GITHUB_ENV
+        release_version=$(grep -Eo "${{ env.CHANGELOG_RELEASE_VERSION_FORMAT }}" ${{ inputs.changelog_path }} | head -1 | grep -Eo "${{ inputs.release_version_format }}")
+        echo "RELEASE_VERSION=$release_version" >> $GITHUB_ENV
 
-    - name: Set RELEASE_NAME using TAG_NAME
+    - name: Set TAG_NAME using inputs.tag_name_format
+      if: env.RELEASE_VERSION == '' && !inputs.disable_changelog
+      shell: bash
+      run: echo "TAG_NAME=${{ inputs.tag_name_format }}" >> $GITHUB_ENV
+
+    - name: Set RELEASE_NAME using RELEASE_VERSION
       if: env.RELEASE_NAME == ''
       shell: bash
-      run: echo "RELEASE_NAME=Release v${{ env.TAG_NAME }}" >> $GITHUB_ENV
+      run: echo "RELEASE_NAME=Release v${{ env.RELEASE_VERSION }}" >> $GITHUB_ENV
 
     - id: tag
-      name: Tag v${{ env.TAG_NAME }}
+      name: Tag v${{ env.RELEASE_VERSION }}
       shell: bash
       run: |
-        git tag -a -m "v${{ env.TAG_NAME }}" "v${{ env.TAG_NAME }}"
-        git push origin "v${{ env.TAG_NAME }}"
+        git tag -a -m "v${{ env.RELEASE_VERSION }}" "v${{ env.RELEASE_VERSION }}"
+        git push origin "v${{ env.RELEASE_VERSION }}"
         echo "tag_pushed=true" >> $GITHUB_OUTPUT
 
-    - name: "Save release description to ${tag_name}_changelog file"
+    - name: "Save release description to ${RELEASE_VERSION}_changelog file"
       if: env.RELEASE_DESCRIPTION != ''
       shell: bash
-      run: echo ${{ env.RELEASE_DESCRIPTION }} > "v${{ env.TAG_NAME }}.changelog"
+      run: echo ${{ env.RELEASE_DESCRIPTION }} > "v${{ env.RELEASE_VERSION }}.changelog"
 
-    - name: "Save release description to ${tag_name}_changelog file"
+    - name: "Save release description to ${RELEASE_VERSION}_changelog file"
 #    - name: "Get release description from changelog file"
       if: env.RELEASE_DESCRIPTION == '' && !inputs.disable_changelog
       shell: bash
       run: |
         release_description="$($GITHUB_ACTION_PATH/generate-changelog.sh)"
-        echo "$release_description" > "v${{ env.TAG_NAME }}.changelog"
+        echo "$release_description" > "v${{ env.RELEASE_VERSION }}.changelog"
     - id: release
       name: Release
       shell: bash
       run: |
-        release_url=$(gh release create "v${{ env.TAG_NAME }}" -t "${{ env.RELEASE_NAME }}" -F "v${{ env.TAG_NAME }}.changelog" --verify-tag)
+        release_url=$(gh release create "v${{ env.RELEASE_VERSION }}" -t "${{ env.RELEASE_NAME }}" -F "v${{ env.RELEASE_VERSION }}.changelog" --verify-tag)
         echo "release_url=$release_url" >> $GITHUB_OUTPUT
 
     - name: Control release failure
       if: ${{ failure() && steps.tag.outputs.tag_pushed }}
       shell: bash
-      run: git push --delete origin "v${{ env.TAG_NAME }}"
+      run: git push --delete origin "v${{ env.RELEASE_VERSION }}"
