@@ -53,7 +53,7 @@ runs:
       run: echo "CHANGELOG_TAG_FORMAT=^## \\[${{ inputs.tag_format }}\\]" >> $GITHUB_ENV
 
     - name: Set TAG_NAME from CHANGELOG
-      if: env.TAG_NAME == '' && inputs.changelog_path != ''
+      if: env.TAG_NAME == '' && !inputs.disable_changelog
       shell: bash
       run: |
         tag_name=$(grep -Eo "${{ env.CHANGELOG_TAG_FORMAT }}" ${{ inputs.changelog_path }} | head -1 | grep -Eo "${{ inputs.tag_format }}")
@@ -73,10 +73,8 @@ runs:
         echo "tag_pushed=true" >> $GITHUB_OUTPUT
 
     - name: "Get release description from changelog file"
-      if: inputs.changelog_path != '' && env.RELEASE_DESCRIPTION == ''
+      if: env.RELEASE_DESCRIPTION == '' && !inputs.disable_changelog
       shell: bash
-      env:
-        CHANGELOG_PATH: ${{ inputs.changelog_path }}
       run: |
         release_description="$($GITHUB_ACTION_PATH/generate-changelog.sh)"
         EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
