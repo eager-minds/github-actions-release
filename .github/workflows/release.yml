@@ -58,8 +58,7 @@ jobs:
         with:
           tag_name: ${{ env.TAG_NAME }}
           release_name: ${{ env.RELEASE_NAME }}
-          release_description: "Description test"
-#          changelog_path: ${{ env.CHANGELOG_PATH }}
+          changelog_path: ${{ env.CHANGELOG_PATH }}
 
       - id: echo_release_output
         name: Echo Release Output
