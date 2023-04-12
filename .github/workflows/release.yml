@@ -26,7 +26,8 @@ jobs:
         uses: eager-minds/github-actions-release@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
+        with:
+          changelog_path: ./CHANGELOG
 #          tag_name: "0.0.45"
 #          release_name: Release v0.0.45
 #          disable_changelog: true
