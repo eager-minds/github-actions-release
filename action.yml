@@ -59,7 +59,7 @@ runs:
       if: env.TAG_NAME == '' && !inputs.disable_changelog
       shell: bash
       run: |
-        tag_name=$(grep -Eo "${{ env.CHANGELOG_TAG_FORMAT }}" ${{ inputs.changelog_path }} | head -1 | grep -Eo "${{ inputs.tag_format }}")
+        tag_name="v"$(grep -Eo "${{ env.CHANGELOG_TAG_FORMAT }}" ${{ inputs.changelog_path }} | head -1 | grep -Eo "${{ inputs.tag_format }}")
         echo "TAG_NAME=$tag_name" >> $GITHUB_ENV
 
     - name: Set RELEASE_NAME using TAG_NAME
