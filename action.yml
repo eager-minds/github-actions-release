@@ -7,22 +7,25 @@ description: "Generate GitHub release for a tag"
 
 inputs:
   tag_name:
-    description: "The tag name, required if missing changelog_path"
+    description: "The tag name, required if missing changelog file"
     required: false
-  release_name:
-    description: "The name of the release to publish, defaults to \"Release v$TAG_NAME\""
-    required: true
-  release_description:
-    description: "Release description"
-    required: false
-  changelog_path:
-    description: "Changelog file path to get release description, required if missing tag_name"
-    required: false
-    default: CHANGELOG.md
   tag_format:
     description: "Tag format"
     required: false
     default: "[0-9]+\\.[0-9]+\\.[0-9]+"
+  release_name:
+    description: "The name of the release to publish, defaults to \"Release v$TAG_NAME\""
+    required: true
+  release_description:
+    description: "Release description. By default it is obtained from changelog file or blank"
+    required: false
+  disable_changelog:
+    description: "If true disables changelog parsing. By default latest release tag and changelog_description are obtained from changelog file"
+    required: false
+  changelog_path:
+    description: "Changelog file path to get release description"
+    required: false
+    default: "CHANGELOG.md"
   changelog_tag_format:
     description: "Changelog tag format, defaults to \"## \\[$tag_format\\]\""
     required: false
