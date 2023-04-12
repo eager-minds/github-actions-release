@@ -49,6 +49,7 @@ runs:
       run: |
         echo "GITHUB_TOKEN=${{ inputs.token }}" >> $GITHUB_ENV
         echo "RELEASE_VERSION=${{ inputs.release_version }}" >> $GITHUB_ENV
+        echo "TAG_NAME=${{ inputs.tag_name }}" >> $GITHUB_ENV
         echo "RELEASE_NAME=${{ inputs.release_name }}" >> $GITHUB_ENV
         echo "CHANGELOG_PATH=${{ inputs.changelog_path }}" >> $GITHUB_ENV
         echo "CHANGELOG_RELEASE_VERSION_FORMAT=${{ inputs.changelog_release_version_format }}" >> $GITHUB_ENV
@@ -74,20 +75,23 @@ runs:
     - name: Set RELEASE_NAME using RELEASE_VERSION
       if: env.RELEASE_NAME == ''
       shell: bash
-      run: echo "RELEASE_NAME=Release v${{ env.RELEASE_VERSION }}" >> $GITHUB_ENV
+      run: echo "RELEASE_NAME=Release ${{ env.RELEASE_VERSION }}" >> $GITHUB_ENV
 
     - id: tag
-      name: Tag v${{ env.RELEASE_VERSION }}
+      name: Tag ${{ env.TAG_NAME }}
       shell: bash
       run: |
-        git tag -a -m "v${{ env.RELEASE_VERSION }}" "v${{ env.RELEASE_VERSION }}"
-        git push origin "v${{ env.RELEASE_VERSION }}"
+        git tag -a -m "${{ env.TAG_NAME }}" "${{ env.TAG_NAME }}"
+        git push origin "${{ env.TAG_NAME }}"
         echo "tag_pushed=true" >> $GITHUB_OUTPUT
 
     - name: "Save release description to ${RELEASE_VERSION}_changelog file"
       if: env.RELEASE_DESCRIPTION != ''
       shell: bash
-      run: echo ${{ env.RELEASE_DESCRIPTION }} > "v${{ env.RELEASE_VERSION }}.changelog"
+      run: echo ${{ env.RELEASE_DESCRIPTION }} > "${{ env.RELEASE_VERSION }}.changelog"
+
+    - shell: bash
+      run: echo ${{ github.workspace }}
 
     - name: "Save release description to ${RELEASE_VERSION}_changelog file"
 #    - name: "Get release description from changelog file"
@@ -95,15 +99,15 @@ runs:
       shell: bash
       run: |
         release_description="$($GITHUB_ACTION_PATH/generate-changelog.sh)"
-        echo "$release_description" > "v${{ env.RELEASE_VERSION }}.changelog"
+        echo "$release_description" > "${{ env.RELEASE_VERSION }}.changelog"
     - id: release
       name: Release
       shell: bash
       run: |
-        release_url=$(gh release create "v${{ env.RELEASE_VERSION }}" -t "${{ env.RELEASE_NAME }}" -F "v${{ env.RELEASE_VERSION }}.changelog" --verify-tag)
+        release_url=$(gh release create "${{ env.TAG_NAME }}" -t "${{ env.RELEASE_NAME }}" -F "${{ env.RELEASE_VERSION }}.changelog" --verify-tag)
         echo "release_url=$release_url" >> $GITHUB_OUTPUT
 
     - name: Control release failure
       if: ${{ failure() && steps.tag.outputs.tag_pushed }}
       shell: bash
-      run: git push --delete origin "v${{ env.RELEASE_VERSION }}"
+      run: git push --delete origin "${{ env.TAG_NAME }}"
