@@ -80,8 +80,7 @@ runs:
       shell: bash
       run: echo "${{ env.RELEASE_DESCRIPTION }}" > "${{ env.TAG_NAME }}.changelog"
 
-    - name: "Save release description to ${tag_name}_changelog file"
-#    - name: "Get release description from changelog file"
+    - name: "Save release description to tag_name_changelog file"
       if: env.RELEASE_DESCRIPTION == '' && !inputs.disable_changelog
       shell: bash
       run: |
