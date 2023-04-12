@@ -8,11 +8,6 @@ on:
 
   workflow_dispatch:
 
-env:
-  CI_COMMIT_AUTHOR: Continuous Integration
-  CI_COMMIT_EMAIL: continuous_integration@noreply.eagerminds.tech
-  CHANGELOG_PATH: CHANGELOG
-
 jobs:
   build:
     permissions: write-all
@@ -20,6 +15,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Git config
+        env:
+          CI_COMMIT_AUTHOR: Continuous Integration
+          CI_COMMIT_EMAIL: continuous_integration@noreply.eagerminds.tech
         run: |
           git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
           git config --global user.email "${{ env.CI_COMMIT_EMAIL }}"
@@ -29,8 +27,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: "0.0.40"
+          tag_name: "0.0.41"
           disable_changelog: true
+          release_description: "Tag Version: v0.0.41"
 
       - id: echo_release_output
         name: Echo Release Output
