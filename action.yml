@@ -43,7 +43,7 @@ runs:
     - name: "Set env variables from inputs"
       shell: bash
       run: |
-        echo "GITHUB_TOKEN=${{ inputs.token }} >> $GITHUB_ENV
+        echo "GITHUB_TOKEN=${{ inputs.token }}" >> $GITHUB_ENV
         echo "TAG_NAME=${{ inputs.tag_name }}" >> $GITHUB_ENV
         echo "RELEASE_NAME=${{ inputs.release_name }}" >> $GITHUB_ENV
         echo "CHANGELOG_PATH=${{ inputs.changelog_path }}" >> $GITHUB_ENV
