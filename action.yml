@@ -78,20 +78,17 @@ runs:
     - name: "Get release description from changelog file"
       if: env.RELEASE_DESCRIPTION == '' && !inputs.disable_changelog
       shell: bash
-      run: echo "${{ env.RELEASE_DESCRIPTION }}" > "${{ env.TAG_NAME }}.changelog"
-
-    - name: "Save release description to tag_name_changelog file"
-      if: env.RELEASE_DESCRIPTION == '' && !inputs.disable_changelog
-      shell: bash
       run: |
         release_description="$($GITHUB_ACTION_PATH/generate-changelog.sh)"
-        echo "$release_description" > "${{ env.TAG_NAME }}.changelog"
-
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+        echo "RELEASE_DESCRIPTION<<$EOF" >> $GITHUB_ENV
+        echo "$release_description" >> $GITHUB_ENV
+        echo "$EOF" >> $GITHUB_ENV
     - id: release
       name: Release
       shell: bash
       run: |
-        release_url=$(gh release create "${{ env.TAG_NAME }}" -t "${{ env.RELEASE_NAME }}" -F "${{ env.TAG_NAME }}.changelog" --verify-tag)
+        release_url=$(gh release create "${{ env.TAG_NAME }}" -t "${{ env.RELEASE_NAME }}" --notes "${{ env.RELEASE_DESCRIPTION }}" --verify-tag)
         echo "release_url=$release_url" >> $GITHUB_OUTPUT
 
     - name: Control release failure
