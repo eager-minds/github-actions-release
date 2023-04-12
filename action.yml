@@ -91,7 +91,7 @@ runs:
       name: Release
       shell: bash
       run: |
-        release_url=$(gh release create "v${{ env.TAG_NAME }}" -t "${{ env.RELEASE_NAME }}" --notes "${{ env.RELEASE_DESCRIPTION }}" --verify-tag)
+        release_url=$(gh release create "v${{ env.TAG_NAME }}" -t "${{ env.RELEASE_NAME }}" -F "v${{ env.TAG_NAME }}.changelog" --verify-tag)
         echo "release_url=$release_url" >> $GITHUB_OUTPUT
 
     - name: Control release failure
