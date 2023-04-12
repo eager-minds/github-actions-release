@@ -24,9 +24,8 @@ jobs:
 
       - id: release
         uses: eager-minds/github-actions-release@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 #          changelog_path: ./CHANGELOG.md
 #          tag_name: "0.0.45"
 #          release_name: Release v0.0.45

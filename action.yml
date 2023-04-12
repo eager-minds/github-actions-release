@@ -6,6 +6,9 @@ branding:
 description: "Generate GitHub release for a tag"
 
 inputs:
+  token:
+    description: "The Github access token"
+    required: true
   tag_name:
     description: "The tag name, required if missing changelog file"
     required: false
@@ -15,7 +18,7 @@ inputs:
     default: "[0-9]+\\.[0-9]+\\.[0-9]+"
   release_name:
     description: "The name of the release to publish, defaults to \"Release v$TAG_NAME\""
-    required: true
+    required: false
   release_description:
     description: "Release description. By default it is obtained from changelog file or blank"
     required: false
@@ -40,6 +43,7 @@ runs:
     - name: "Set env variables from inputs"
       shell: bash
       run: |
+        echo "GITHUB_TOKEN=${{ inputs.token }} >> $GITHUB_ENV
         echo "TAG_NAME=${{ inputs.tag_name }}" >> $GITHUB_ENV
         echo "RELEASE_NAME=${{ inputs.release_name }}" >> $GITHUB_ENV
         echo "CHANGELOG_PATH=${{ inputs.changelog_path }}" >> $GITHUB_ENV
