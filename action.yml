@@ -24,10 +24,16 @@ outputs:
     value: ${{ steps.release.outputs.release_url }}
 
 runs:
-  env:
-    TAG_NAME: "${{ inputs.tag_name }}"
   using: 'composite'
   steps:
+    - name: "Set env variables from inputs"
+      shell: bash
+      env:
+        TAG_NAME: "${{ inputs.tag_name }}"
+        RELEASE_NAME: ${{ inputs.release_name }}
+        CHANGELOG_PATH: ${{ inputs.changelog_path }}
+      run: "setting up environment variables from inputs"
+
     - name: Set CHANGELOG_TAG_FORMAT using TAG_FORMAT
       if: env.CHANGELOG_TAG_FORMAT == ''
       shell: bash
@@ -78,4 +84,4 @@ runs:
     - name: Control release failure
       if: ${{ failure() && steps.tag.outputs.tag_pushed }}
       shell: bash
-      run: git push --delete origin $TAG_NAME
+      run: git push --delete origin ${{ env.TAG_NAME }}
