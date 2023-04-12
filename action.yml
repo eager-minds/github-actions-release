@@ -7,16 +7,24 @@ description: "Generate GitHub release for a tag"
 
 inputs:
   tag_name:
-    description: "The tag name"
-    required: true
+    description: "The tag name, required if missing changelog_path"
+    required: false
   release_name:
-    description: "The name of the release to publish"
+    description: "The name of the release to publish, defaults to \"Release v${{ env.TAG_NAME }}\""
     required: true
   release_description:
     description: "Release description"
     required: false
   changelog_path:
-    description: "Changelog file path to get release description"
+    description: "Changelog file path to get release description, required if missing tag_name"
+    required: false
+    default: CHANGELOG.md
+  tag_format:
+    description: "Tag format"
+    required: false
+    default: "[0-9]+\\.[0-9]+\\.[0-9]+"
+  changelog_tag_format:
+    description: "Changelog tag format, defaults to \"## \\[$tag_format\\]\""
     required: false
 outputs:
   release_url:
@@ -32,18 +40,22 @@ runs:
         TAG_NAME: "${{ inputs.tag_name }}"
         RELEASE_NAME: ${{ inputs.release_name }}
         CHANGELOG_PATH: ${{ inputs.changelog_path }}
+        CHANGELOG_TAG_FORMAT: ${{ inputs.changelog_tag_format }}
+        RELEASE_DESCRIPTION: ${{ inputs.release_description }}
       run: "setting up environment variables from inputs"
 
     - name: Set CHANGELOG_TAG_FORMAT using TAG_FORMAT
       if: env.CHANGELOG_TAG_FORMAT == ''
       shell: bash
-      run: echo "CHANGELOG_TAG_FORMAT=^## \\[$TAG_FORMAT\\]" >> $GITHUB_ENV
+      run: echo "CHANGELOG_TAG_FORMAT=^## \\[${{ inputs.tag_format }}\\]" >> $GITHUB_ENV
+
     - name: Set TAG_NAME from CHANGELOG
-      if: env.TAG_NAME == ''
+      if: env.TAG_NAME == '' && inputs.changelog_path != ''
       shell: bash
       run: |
-        tag_name=$(grep -Eo "$CHANGELOG_TAG_FORMAT" $CHANGELOG_PATH | head -1 | grep -Eo "$TAG_FORMAT")
+        tag_name=$(grep -Eo "${{ env.CHANGELOG_TAG_FORMAT }}" ${{ inputs.changelog_path }} | head -1 | grep -Eo "${{ inputs.tag_format }}")
         echo "TAG_NAME=$tag_name" >> $GITHUB_ENV
+
     - name: Set RELEASE_NAME using TAG_NAME
       if: env.RELEASE_NAME == ''
       shell: bash
@@ -57,10 +69,6 @@ runs:
         git push origin ${{ env.TAG_NAME }}
         echo "tag_pushed=true" >> $GITHUB_OUTPUT
 
-    - name: "Set Input Release Description"
-      if: inputs.release_description != ''
-      shell: bash
-      run: echo "RELEASE_DESCRIPTION=${{ inputs.release_description }}" >> $GITHUB_ENV
     - name: "Get release description from changelog file"
       if: inputs.changelog_path != '' && env.RELEASE_DESCRIPTION == ''
       shell: bash
@@ -75,8 +83,6 @@ runs:
     - id: release
       name: Release
       shell: bash
-      env:
-        RELEASE_NAME: "${{ inputs.release_name }}"
       run: |
         release_url=$(gh release create "${{ env.TAG_NAME }}" -t "${{ env.RELEASE_NAME }}" --notes "${{ env.RELEASE_DESCRIPTION }}" --verify-tag)
         echo "release_url=$release_url" >> $GITHUB_OUTPUT
