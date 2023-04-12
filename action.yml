@@ -71,10 +71,10 @@ runs:
       shell: bash
       run: echo "TAG_NAME=v${{ env.RELEASE_VERSION }}" >> $GITHUB_ENV
 
-    - name: Set RELEASE_NAME using RELEASE_VERSION
+    - name: Set RELEASE_NAME using default ${env.TAG_NAME}
       if: env.RELEASE_NAME == ''
       shell: bash
-      run: echo "RELEASE_NAME=Release ${{ env.RELEASE_VERSION }}" >> $GITHUB_ENV
+      run: echo "RELEASE_NAME=${{ env.TAG_NAME }}" >> $GITHUB_ENV
 
     - id: tag
       name: Tag ${{ env.TAG_NAME }}
@@ -103,7 +103,7 @@ runs:
       name: Release
       shell: bash
       run: |
-        release_url=$(gh release create "${{ env.TAG_NAME }}" -t "${{ env.RELEASE_NAME }}" -F "${{ env.RELEASE_VERSION }}.changelog" --verify-tag)
+        release_url=$(gh release create "${{ env.TAG_NAME }}" -t "${{ env.TAG_NAME }}" -F "${{ env.RELEASE_VERSION }}.changelog" --verify-tag)
         echo "release_url=$release_url" >> $GITHUB_OUTPUT
 
     - name: Control release failure
