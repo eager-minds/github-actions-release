@@ -95,7 +95,7 @@ runs:
         git tag -a -m "${{ env.TAG_NAME }}" "${{ env.TAG_NAME }}"
         git push origin "${{ env.TAG_NAME }}"
         echo "release_major_version="$(echo "${{ env.RELEASE_VERSION }}" | cut -d ${{ inputs.release_version_delimiter }} -f 1) >> $GITHUB_OUTPUT
-        echo "minor_tag="$(echo "${{ env.RELEASE_VERSION }}" | cut -d ${{ inputs.release_version_delimiter }} -f 2) >> $GITHUB_OUTPUT
+        echo "release_minor_version="$(echo "${{ env.RELEASE_VERSION }}" | cut -d ${{ inputs.release_version_delimiter }} -f 2) >> $GITHUB_OUTPUT
         echo "tag_pushed=true" >> $GITHUB_OUTPUT
 
     - id: tag_major
