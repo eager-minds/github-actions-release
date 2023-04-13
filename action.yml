@@ -96,7 +96,8 @@ runs:
       name: Tag ${{ env.TAG_NAME }} and get major and minor release versions
       shell: bash
       run: |
-        git tag -a -m "${{ env.TAG_NAME }}" "${{ env.TAG_NAME }}"
+        tag_force=''
+        git tag $tag_force -a -m "${{ env.TAG_NAME }}" "${{ env.TAG_NAME }}"
         git push origin "${{ env.TAG_NAME }}"
         echo "release_major_version="$(echo "${{ env.RELEASE_VERSION }}" | cut -d ${{ inputs.release_version_delimiter }} -f 1) >> $GITHUB_OUTPUT
         echo "release_minor_version="$(echo "${{ env.RELEASE_VERSION }}" | cut -d ${{ inputs.release_version_delimiter }} -f 2) >> $GITHUB_OUTPUT
@@ -132,7 +133,13 @@ runs:
       name: "Get release description from changelog file"
       if: env.RELEASE_DESCRIPTION == '' && !inputs.disable_changelog
       shell: bash
-      run: echo "release_description=$($GITHUB_ACTION_PATH/generate-changelog.sh)" >> $GITHUB_OUTPUT
+      run:  |
+        release_description="$($GITHUB_ACTION_PATH/generate-changelog.sh)"
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+        echo "RELEASE_DESCRIPTION<<$EOF" >> $GITHUB_OUTPUT
+        echo "$release_description" >> $GITHUB_OUTPUT
+        echo "$EOF" >> $GITHUB_OUTPUT
+#        echo "release_description=$($GITHUB_ACTION_PATH/generate-changelog.sh)" >> $GITHUB_OUTPUT
 
     - name: "Save release description to ${RELEASE_VERSION}_changelog file"
       if: env.RELEASE_DESCRIPTION == '' && !inputs.disable_changelog
