@@ -94,7 +94,7 @@ runs:
 
     - id: tag_major
       name: Tag major from ${{ env.RELEASE_VERSION }}
-      if: input.tag_major
+      if: inputs.tag_major
       shell: bash
       run: |
         major_tag=$(echo "${{ env.RELEASE_VERSION }}" | cut -d '.' -f 1)
