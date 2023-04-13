@@ -144,7 +144,7 @@ runs:
     - id: push_tags
       name: Push all pending tags
       shell: bash
-      run: git push origin --tags -f
+      run: git push -f origin --tags
 
     - name: Control release failure
       if: ${{ failure() && steps.tag.outputs.tag_pushed }}
