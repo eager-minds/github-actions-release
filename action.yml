@@ -150,7 +150,7 @@ runs:
       name: Release
       shell: bash
       run: |
-        release_url=$(gh release create "${{ env.TAG_NAME }}" -t "${{ env.TAG_NAME }}" -F "${{ env.RELEASE_VERSION }}.changelog" --verify-tag)
+        release_url=$(gh release create "${{ env.TAG_NAME }}" -t "${{ env.TAG_NAME }}" -F "${{ env.RELEASE_VERSION }}.changelog")
         echo "release_url=$release_url" >> $GITHUB_OUTPUT
 
     - id: push_tags
