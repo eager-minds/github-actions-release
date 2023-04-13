@@ -23,7 +23,7 @@ jobs:
           git config --global user.email "${{ env.CI_COMMIT_EMAIL }}"
 
       - id: release
-        uses: eager-minds/github-actions-release@v0
+        uses: eager-minds/github-actions-release@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag_major: true
