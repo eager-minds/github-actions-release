@@ -96,9 +96,9 @@ runs:
       name: Tag ${{ env.TAG_NAME }} and get major and minor release versions
       shell: bash
       run: |
-        tag_force=''
+        tag_force='-f'
         git tag $tag_force -a -m "${{ env.TAG_NAME }}" "${{ env.TAG_NAME }}"
-        git push origin "${{ env.TAG_NAME }}"
+        git push $tag_force origin "${{ env.TAG_NAME }}"
         echo "release_major_version="$(echo "${{ env.RELEASE_VERSION }}" | cut -d ${{ inputs.release_version_delimiter }} -f 1) >> $GITHUB_OUTPUT
         echo "release_minor_version="$(echo "${{ env.RELEASE_VERSION }}" | cut -d ${{ inputs.release_version_delimiter }} -f 2) >> $GITHUB_OUTPUT
         echo "tag_pushed=true" >> $GITHUB_OUTPUT
