@@ -16,6 +16,10 @@ inputs:
     description: "Release version format"
     required: false
     default: "[0-9]+\\.[0-9]+\\.[0-9]+"
+  release_version_delimiter:
+    description: "Release version delimiter"
+    required: false
+    default: '.'
   tag_name:
     description: "The name of the release tag, defaults to \"v${RELEASE_VERSION}\""
     required: false
@@ -23,13 +27,13 @@ inputs:
     description: "The name of the release to publish, defaults to \"${TAG_NAME}\""
     required: false
   tag_major:
-    description: "If true generates/overwrites tag of major version, default to true"
+    description: "If true generates/overwrites tag of major version, default to false"
     required: false
-    default: "true"
+    default: "false"
   tag_minor:
-    description: "If true generates/overwrites tag of minor version, default to true"
+    description: "If true generates/overwrites tag of minor version, default to false"
     required: false
-    default: "true"
+    default: "false"
   release_description:
     description: "Release description. By default it is obtained from changelog file or blank"
     required: false
@@ -85,22 +89,30 @@ runs:
       run: echo "RELEASE_NAME=${{ env.TAG_NAME }}" >> $GITHUB_ENV
 
     - id: tag
-      name: Tag ${{ env.TAG_NAME }}
+      name: Tag ${{ env.TAG_NAME }} and get major and minor release versions
       shell: bash
       run: |
         git tag -a -m "${{ env.TAG_NAME }}" "${{ env.TAG_NAME }}"
         git push origin "${{ env.TAG_NAME }}"
+        echo "release_major_version="$(echo "${{ env.RELEASE_VERSION }}" | cut -d ${{ inputs.release_version_delimiter }} -f 1) >> $GITHUB_OUTPUT
+        echo "minor_tag="$(echo "${{ env.RELEASE_VERSION }}" | cut -d ${{ inputs.release_version_delimiter }} -f 2) >> $GITHUB_OUTPUT
         echo "tag_pushed=true" >> $GITHUB_OUTPUT
 
     - id: tag_major
       name: Tag major from ${{ env.RELEASE_VERSION }}
-      if: inputs.tag_major
+      if: inputs.tag_major == 'true'
       shell: bash
       run: |
-        major_tag=$(echo "${{ env.RELEASE_VERSION }}" | cut -d '.' -f 1)
-        git tag -fa -m "$major_tag" "v$major_tag"
-        git push origin "v$major_tag"
-#        echo "tag_pushed=true" >> $GITHUB_OUTPUT
+        tag_name_major="v${{ steps.tag.outputs.release_major_version }}"
+        git tag -fa -m "$tag_name_major" "$tag_name_major"
+
+    - id: tag_minor
+      name: Tag minor from ${{ env.RELEASE_VERSION }}
+      if: inputs.tag_minor == 'true'
+      shell: bash
+      run: |
+        tag_name_minor="v${{ steps.tag.outputs.release_major_version }}${{ inputs.release_version_delimiter }}${{ steps.tag.outputs.release_minor_version }}"
+        git tag -fa -m "$tag_name_minor" "$tag_name_minor"
 
     - name: "Save release description to ${RELEASE_VERSION}_changelog file"
       if: env.RELEASE_DESCRIPTION != ''
@@ -117,12 +129,18 @@ runs:
       run: |
         release_description="$($GITHUB_ACTION_PATH/generate-changelog.sh)"
         echo "$release_description" > "${{ env.RELEASE_VERSION }}.changelog"
+
     - id: release
       name: Release
       shell: bash
       run: |
         release_url=$(gh release create "${{ env.TAG_NAME }}" -t "${{ env.TAG_NAME }}" -F "${{ env.RELEASE_VERSION }}.changelog" --verify-tag)
         echo "release_url=$release_url" >> $GITHUB_OUTPUT
+
+    - id: push_tags
+      name: Push all pending tags
+      shell: bash
+      run: git push origin --tags
 
     - name: Control release failure
       if: ${{ failure() && steps.tag.outputs.tag_pushed }}
