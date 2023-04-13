@@ -92,7 +92,7 @@ runs:
         git push origin "${{ env.TAG_NAME }}"
         echo "tag_pushed=true" >> $GITHUB_OUTPUT
 
-    - id: tag major
+    - id: tag_major
       name: Tag major from ${{ env.RELEASE_VERSION }}
       if: input.tag_major
       shell: bash
