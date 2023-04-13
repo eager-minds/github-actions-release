@@ -26,6 +26,10 @@ inputs:
   release_name:
     description: "The name of the release to publish, defaults to \"${TAG_NAME}\""
     required: false
+  skip_tag_zero:
+    description: "If true skips minor and major tag generation when its value is zero. Example: 'v0', 'v0.0'"
+    required: false
+    default: "false"
   tag_major:
     description: "If true generates/overwrites tag of major version, default to false"
     required: false
@@ -100,7 +104,7 @@ runs:
 
     - id: tag_major
       name: Tag major from ${{ env.RELEASE_VERSION }}
-      if: inputs.tag_major == 'true'
+      if: inputs.tag_major == 'true' && inputs.skip_tag_zero == 'true' || steps.tag.outputs.release_major_version != '0'
       shell: bash
       run: |
         tag_name_major="v${{ steps.tag.outputs.release_major_version }}"
@@ -108,7 +112,7 @@ runs:
 
     - id: tag_minor
       name: Tag minor from ${{ env.RELEASE_VERSION }}
-      if: inputs.tag_minor == 'true'
+      if: inputs.tag_minor == 'true' && inputs.skip_tag_zero == 'true' || steps.tag.outputs.release_minor_version != '0'
       shell: bash
       run: |
         tag_name_minor="v${{ steps.tag.outputs.release_major_version }}${{ inputs.release_version_delimiter }}${{ steps.tag.outputs.release_minor_version }}"
