@@ -23,13 +23,13 @@ jobs:
           git config --global user.email "${{ env.CI_COMMIT_EMAIL }}"
 
       - id: release
-        uses: eager-minds/github-actions-release@v0
+        uses: eager-minds/github-actions-release@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag_major: true
           tag_minor: true
-#          skip_tag_zero: true
-          changelog_path: ./CHANGELOG.md
+          skip_tag_zero: true
+#          changelog_path: ./CHANGELOG.md
 #          release_version: "0.0.45"
 #          release_name: Release v0.0.45
 #          disable_changelog: true

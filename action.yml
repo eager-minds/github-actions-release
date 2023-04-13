@@ -124,15 +124,20 @@ runs:
       run: echo ${{ env.RELEASE_DESCRIPTION }} > "${{ env.RELEASE_VERSION }}.changelog"
 
     - shell: bash
-      run: echo ${{ github.workspace }}
+      run: |
+        echo ${{ github.workspace }}
+        pwd
 
-    - name: "Save release description to ${RELEASE_VERSION}_changelog file"
-#    - name: "Get release description from changelog file"
+    - id: get_release_description_from_changelog
+      name: "Get release description from changelog file"
       if: env.RELEASE_DESCRIPTION == '' && !inputs.disable_changelog
       shell: bash
-      run: |
-        release_description="$($GITHUB_ACTION_PATH/generate-changelog.sh)"
-        echo "$release_description" > "${{ env.RELEASE_VERSION }}.changelog"
+      run: echo "release_description=$($GITHUB_ACTION_PATH/generate-changelog.sh)" >> $GITHUB_OUTPUT
+
+    - name: "Save release description to ${RELEASE_VERSION}_changelog file"
+      if: env.RELEASE_DESCRIPTION == '' && !inputs.disable_changelog
+      shell: bash
+      run: echo "${{ steps.get_release_description_from_changelog.outputs.release_description }}" > "${{ env.RELEASE_VERSION }}.changelog"
 
     - id: release
       name: Release
