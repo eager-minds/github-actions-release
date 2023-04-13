@@ -99,7 +99,7 @@ runs:
       run: |
         major_tag=$(echo "${{ env.RELEASE_VERSION }}" | cut -d '.' -f 1)
         git tag -fa -m "$major_tag" "v$major_tag"
-        git push origin "$major_tag"
+        git push origin "v$major_tag"
 #        echo "tag_pushed=true" >> $GITHUB_OUTPUT
 
     - name: "Save release description to ${RELEASE_VERSION}_changelog file"
