@@ -153,16 +153,20 @@ runs:
       name: "Check if release exists"
       shell: bash
       run: |
-        if gh release view "$tag_name" > /dev/null 2>&1; then
+        if gh release view "${{ env.TAG_NAME }}" > /dev/null 2>&1; then
           echo "exists=true" >> $GITHUB_OUTPUT
         else
           echo "exists=false" >> $GITHUB_OUTPUT
         fi
 
+    - name: "Delete release"
+      shell: bash
+      if: steps.check_release.outputs.exists == 'true' && inputs.overwrite_release == 'true'
+      run: gh release delete "${{ env.TAG_NAME }}" --yes
+
     - id: release
       name: Release
       shell: bash
-      if: steps.check_release.outputs.exists == 'false' || inputs.overwrite_release == 'true'
       run: |
         release_url=$(gh release create "${{ env.TAG_NAME }}" -t "${{ env.TAG_NAME }}" -F "${{ env.RELEASE_VERSION }}.changelog" --verify-tag)
         echo "release_url=$release_url" >> $GITHUB_OUTPUT
