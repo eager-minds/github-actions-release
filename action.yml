@@ -16,6 +16,10 @@ inputs:
     description: "Release version format"
     required: false
     default: "[0-9]+\\.[0-9]+\\.[0-9]+"
+  overwrite_release:
+    description: "Forces existing release to be overwritten"
+    required: false
+    default: "false"
   release_version_delimiter:
     description: "Release version delimiter"
     required: false
@@ -133,7 +137,7 @@ runs:
       name: "Get release description from changelog file"
       if: env.RELEASE_DESCRIPTION == '' && !inputs.disable_changelog
       shell: bash
-      run:  |
+      run: |
         release_description="$($GITHUB_ACTION_PATH/generate-changelog.sh)"
         EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
         echo "RELEASE_DESCRIPTION<<$EOF" >> $GITHUB_OUTPUT
@@ -145,9 +149,20 @@ runs:
       shell: bash
       run: echo "${{ steps.get_release_description_from_changelog.outputs.release_description }}" > "${{ env.RELEASE_VERSION }}.changelog"
 
+    - id: check_release
+      name: "Check if release exists"
+      shell: bash
+      run: |
+        if gh release view "$tag_name" > /dev/null 2>&1; then
+          echo "exists=true" >> $GITHUB_OUTPUT
+        else
+          echo "exists=false" >> $GITHUB_OUTPUT
+        fi
+
     - id: release
       name: Release
       shell: bash
+      if: steps.check_release.outputs.exists == 'false' || inputs.overwrite_release == 'true'
       run: |
         release_url=$(gh release create "${{ env.TAG_NAME }}" -t "${{ env.TAG_NAME }}" -F "${{ env.RELEASE_VERSION }}.changelog" --verify-tag)
         echo "release_url=$release_url" >> $GITHUB_OUTPUT
