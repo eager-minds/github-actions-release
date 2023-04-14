@@ -30,6 +30,7 @@ jobs:
           tag_minor: true
           skip_tag_zero: true
           overwrite_release: true
+          overwrite_tag: true
 #          changelog_path: ./CHANGELOG.md
 #          release_version: "0.0.45"
 #          release_name: Release v0.0.45
