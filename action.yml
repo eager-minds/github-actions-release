@@ -105,6 +105,7 @@ runs:
       shell: bash
       run: |
         tag_force=$([ "$overwrite_tag" = 'true' ] && echo '-f' || echo '')
+        echo $tag_force
         git tag $tag_force -a -m "${{ env.TAG_NAME }}" "${{ env.TAG_NAME }}"
         git push $tag_force origin "${{ env.TAG_NAME }}"
         echo "release_major_version="$(echo "${{ env.RELEASE_VERSION }}" | cut -d ${{ inputs.release_version_delimiter }} -f 1) >> $GITHUB_OUTPUT
