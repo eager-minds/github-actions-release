@@ -87,6 +87,15 @@ runs:
       if: env.RELEASE_VERSION == '' && !inputs.disable_changelog
       shell: bash
       run: |
+        bash --version
+        changelogSubtitles=$(grep -Eo "$env.CHANGELOG_RELEASE_VERSION_FORMAT" "$inputs.changelog_path")
+        mapfile -t versions < <(echo "$changelogSubtitles" | grep -Eo "$inputs.release_version_format")
+        echo "${versions[0]}"
+
+    - name: Get latest release_version from CHANGELOG
+      if: env.RELEASE_VERSION == '' && !inputs.disable_changelog
+      shell: bash
+      run: |
         release_version=$(grep -Eo "${{ env.CHANGELOG_RELEASE_VERSION_FORMAT }}" "${{ inputs.changelog_path }}" | head -1 | grep -Eo "${{ inputs.release_version_format }}")
         echo "RELEASE_VERSION=$release_version" >> $GITHUB_ENV
 
@@ -104,7 +113,7 @@ runs:
       name: Tag ${{ env.TAG_NAME }} and get major and minor release versions
       shell: bash
       run: |
-        tag_force=$([ "$overwrite_tag" = 'true' ] && echo '-f' || echo '')
+        tag_force=$([ "${{ inputs.overwrite_tag }}" = 'true' ] && echo '-f' || echo '')
         echo $tag_force
         git tag $tag_force -a -m "${{ env.TAG_NAME }}" "${{ env.TAG_NAME }}"
         git push $tag_force origin "${{ env.TAG_NAME }}"
