@@ -94,7 +94,7 @@ runs:
         echo "first_version=$(expr ${#versions[@]d})" >> $GITHUB_OUTPUT
 
     - shell: bash
-      run: echo "${{ steps.read_changelog.outputs.stdout }}"
+      run: echo "${{ join(steps.read_changelog.outputs.*, '\n') }}"
 
     - name: Persist Release Version
       if: env.RELEASE_VERSION == '' && !inputs.disable_changelog
