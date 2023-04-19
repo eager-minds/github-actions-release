@@ -91,7 +91,7 @@ runs:
         changelogSubtitles=$(grep -Eo "${{ env.CHANGELOG_RELEASE_VERSION_FORMAT }}" "${{ inputs.changelog_path }}")
         mapfile -t versions < <(echo "$changelogSubtitles" | grep -Eo "${{ inputs.release_version_format }}")
         echo "latest_version=${versions[0]}" >> $GITHUB_OUTPUT
-        echo "first_version=$(expr ${#versions[@]})" >> $GITHUB_OUTPUT
+        echo "first_version=$(expr ${versions[${#versions[@]}]})" >> $GITHUB_OUTPUT
 
     - shell: bash
       run: echo "${{ join(steps.read_changelog.outputs.*, '\n') }}"
