@@ -91,10 +91,12 @@ runs:
         changelogSubtitles=$(grep -Eo "${{ env.CHANGELOG_RELEASE_VERSION_FORMAT }}" "${{ inputs.changelog_path }}")
         mapfile -t versions < <(echo "$changelogSubtitles" | grep -Eo "${{ inputs.release_version_format }}")
         echo "latest_version=${versions[0]}" >> $GITHUB_OUTPUT
-        echo "first_version=$(expr ${versions[${#versions[@]}]})" >> $GITHUB_OUTPUT
+        echo "first_version=${versions[${#versions[@]}]}" >> $GITHUB_OUTPUT
 
     - shell: bash
-      run: echo "${{ join(steps.read_changelog.outputs.*, "\n") }}"
+      run: |
+        echo "latest_version: ${{ steps.read_changelog.outputs.latest_version }}"
+        echo "first_version: ${{ steps.read_changelog.outputs.first_version }}"
 
     - name: Persist Release Version
       if: env.RELEASE_VERSION == '' && !inputs.disable_changelog
