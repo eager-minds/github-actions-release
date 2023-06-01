@@ -168,7 +168,7 @@ runs:
 #      shell: bash
 #      run: echo "${{ steps.get_release_description_from_changelog.outputs.release_description }}" > "${{ env.RELEASE_VERSION }}.changelog"
 
-    - id: release
+    - id: get_changelog_description
       uses: eager-minds/github-actions-changelog@main
 
     - id: check_release
